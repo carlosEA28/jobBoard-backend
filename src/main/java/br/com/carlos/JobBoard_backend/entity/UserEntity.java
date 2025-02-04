@@ -1,5 +1,6 @@
 package br.com.carlos.JobBoard_backend.entity;
 
+import br.com.carlos.JobBoard_backend.enums.AuthProvider;
 import br.com.carlos.JobBoard_backend.enums.Roles;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -37,6 +38,11 @@ public class UserEntity {
 
     private Instant resetTokenExpiration;
 
+    @Enumerated(EnumType.STRING)
+    private Roles roles;
+
+    @Enumerated(EnumType.STRING)
+    private AuthProvider authProvider;
 
     public UUID getUserId() {
         return userId;
@@ -102,8 +108,13 @@ public class UserEntity {
         this.resetTokenExpiration = resetTokenExpiration;
     }
 
-    @Enumerated(EnumType.STRING)
-    private Roles roles;
+    public AuthProvider getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(AuthProvider authProvider) {
+        this.authProvider = authProvider;
+    }
 
     public UserEntity withResetToken(String resetToken, Instant resetTokenAdditionalTime) {
         this.resetToken = resetToken;
