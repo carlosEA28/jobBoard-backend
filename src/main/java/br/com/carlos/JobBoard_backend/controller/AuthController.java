@@ -22,14 +22,14 @@ public class AuthController {
 
     @PostMapping("/login/google")
     public ResponseEntity<String> loginGoogleAuth(HttpServletResponse response) throws IOException {
-        // Faz o redirecionamento direto para o Google, sem exibir a tela de escolha
+
         response.sendRedirect("/oauth2/authorization/google");
         return ResponseEntity.ok("Redirecting to Google...");
     }
 
     @GetMapping("/loginSuccess")
     public ResponseEntity<?> handleGoogleSuccess(OAuth2AuthenticationToken token) throws IOException {
-        // Salva o usuário no banco e redireciona para a home page
+
         userService.loginRegisterByGoogleOauth2(token);
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://localhost:5173/")).build();
     }

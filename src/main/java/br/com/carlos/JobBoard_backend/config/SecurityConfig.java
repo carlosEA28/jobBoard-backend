@@ -33,11 +33,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // 🔹 Desativando CSRF para testes
-                .cors(cors -> cors.disable()) // 🔹 Desativando CORS temporariamente
+                .csrf(csrf -> csrf.disable())
+                .cors(c -> c.disable())//DESABILITAR DPS
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // ✅ Permite tudo, só para testes!
-                );
+                        .requestMatchers(HttpMethod.POST, "/user").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/login/local").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/info/{userId}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/user/currentUser").authenticated()
+                        .anyRequest().permitAll()) //arrumar e por em authenticated
+                .oauth2ResourceServer(config -> config.jwt(jwt -> jwt.decoder(jwtConfig.jwtDecoder())));
+
 
         return http.build();
     }

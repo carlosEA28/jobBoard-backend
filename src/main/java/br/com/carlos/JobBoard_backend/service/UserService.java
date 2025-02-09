@@ -1,6 +1,7 @@
 package br.com.carlos.JobBoard_backend.service;
 
 import br.com.carlos.JobBoard_backend.dto.CreateUserDto;
+import br.com.carlos.JobBoard_backend.dto.LoggedUserDto;
 import br.com.carlos.JobBoard_backend.dto.LoginDto;
 import br.com.carlos.JobBoard_backend.dto.LoginResponseDto;
 import br.com.carlos.JobBoard_backend.entity.UserEntity;
@@ -8,6 +9,7 @@ import br.com.carlos.JobBoard_backend.enums.AuthProvider;
 import br.com.carlos.JobBoard_backend.enums.Roles;
 import br.com.carlos.JobBoard_backend.exceptions.UserAlreadyExists;
 import br.com.carlos.JobBoard_backend.exceptions.UserNotFound;
+import br.com.carlos.JobBoard_backend.exceptions.WrongCreadentials;
 import br.com.carlos.JobBoard_backend.repository.UserRepository;
 import br.com.carlos.JobBoard_backend.utils.JwtActions;
 import lombok.extern.java.Log;
@@ -18,6 +20,8 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -52,10 +56,10 @@ public class UserService {
     }
 
     public LoginResponseDto loginUser(LoginDto dto) {
-        var user = userRepository.findByEmail(dto.email()).orElseThrow(() -> new UserAlreadyExists("This user already exists"));
+        var user = userRepository.findByEmail(dto.email()).orElseThrow(() -> new UserNotFound("User Not found"));
 
         if (!bCryptPasswordEncoder.matches(dto.password(), user.getPassword())) {
-            throw new WrongThreadException("Email/Password incorrect");
+            throw new WrongCreadentials("Email/Password incorrect");
         }
         return jwtActions.jwtCreate(dto);
     }
@@ -78,5 +82,10 @@ public class UserService {
         newUser.setAuthProvider(AuthProvider.GOOGLE);
 
         return userRepository.save(newUser);
+    }
+
+    public LoggedUserDto loggedUser(String userId) {
+        var userExists = userRepository.findById(UUID.fromString(userId)).orElseThrow(() -> new UserNotFound("User not found"));
+        return new LoggedUserDto(userExists.getFirstName(), userExists.getSecondName(), userExists.getEmail(), userExists.getPassword());
     }
 }
