@@ -12,13 +12,11 @@ import br.com.carlos.JobBoard_backend.exceptions.UserNotFound;
 import br.com.carlos.JobBoard_backend.exceptions.WrongCreadentials;
 import br.com.carlos.JobBoard_backend.repository.UserRepository;
 import br.com.carlos.JobBoard_backend.utils.JwtActions;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
