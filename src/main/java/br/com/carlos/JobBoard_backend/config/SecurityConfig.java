@@ -34,13 +34,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(c -> c.disable())//DESABILITAR DPS
+                .cors(c -> c.disable())//HABILITAR DPS
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/user").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/login/local").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/company").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/company/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/info/{userId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/user/currentUser").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/generate").permitAll()
                         .anyRequest().permitAll()) //arrumar e por em authenticated
                 .oauth2ResourceServer(config -> config.jwt(jwt -> jwt.decoder(jwtConfig.jwtDecoder())));
 

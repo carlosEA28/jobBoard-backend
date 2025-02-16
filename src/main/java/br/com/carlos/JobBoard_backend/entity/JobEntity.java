@@ -59,6 +59,19 @@ public class JobEntity {
     @JoinColumn(name = "companyId", nullable = false)
     private CompanyEntity company;
 
+    @OneToOne
+    @JoinColumn(name = "logo_id", referencedColumnName = "logo_id")
+    private CompanyLogoEntity companyLogoEntity;
+
+
+    public CompanyLogoEntity getCompanyLogoEntity() {
+        return companyLogoEntity;
+    }
+
+    public void setCompanyLogoEntity(CompanyLogoEntity companyLogoEntity) {
+        this.companyLogoEntity = companyLogoEntity;
+    }
+
     public UUID getJobId() {
         return jobId;
     }
