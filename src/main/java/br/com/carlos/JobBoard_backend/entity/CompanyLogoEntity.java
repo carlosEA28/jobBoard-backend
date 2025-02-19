@@ -21,6 +21,10 @@ public class CompanyLogoEntity {
     @Column(name = "image_url")
     private String url;
 
+    public static Object builder() {
+        return null;
+    }
+
     public UUID getLogoId() {
         return logoId;
     }

@@ -34,6 +34,8 @@ public class CompanyService {
         return companyRepository.save(newCompany);
     }
 
+//    public LoginCompanyResponseDto loginCompany(){}
+
 //    public JobEntity postJob() {
 //
 //    }

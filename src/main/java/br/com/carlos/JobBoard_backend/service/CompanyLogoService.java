@@ -1,60 +1,41 @@
 package br.com.carlos.JobBoard_backend.service;
 
+import br.com.carlos.JobBoard_backend.entity.CompanyLogoEntity;
+import br.com.carlos.JobBoard_backend.repository.CompanyLogoRepository;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.net.URI;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-import java.time.Duration;
 
 @Service
 public class CompanyLogoService {
 
-    @Value("${spring.cloudflare.secret_access_key}")
-    private String secretAccessKey;
+    @Autowired
+    private CompanyLogoRepository companyLogoRepository;
 
-    @Value("${spring.cloudflare.access_key_id}")
-    private String accessKey;
+    @Autowired
+    private Cloudinary cloudinary;
 
-    @Value("${aws.s3.bucketName}")
-    private String bucketName;
+    public CompanyLogoEntity uploadLogo(String name, MultipartFile file) {
+        try {
+            var uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("folder", "logo"));
 
-    @Value("${spring.cloudflare.url}")
-    private String url;
+            var newLogo = new CompanyLogoEntity();
+            newLogo.setLogoName(name);
+            newLogo.setUrl(uploadResult.get("url").toString());
 
-    public String generatePreSignedUrl(String objectKey) {
-        AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretAccessKey);
-        StaticCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(credentials);
-
-        // Criando um S3Presigner para gerar a URL
-        try (S3Presigner presigner = S3Presigner.builder()
-                .region(Region.of("wnam"))
-                .endpointOverride(URI.create(url))
-                .credentialsProvider(credentialsProvider)
-                .build()) {
-
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(objectKey)
-                    .build();
-
-            PresignedPutObjectRequest preSignedRequest = presigner.presignPutObject(presign -> presign
-                    .signatureDuration(Duration.ofMinutes(10))
-                    .putObjectRequest(putObjectRequest));
-
-            return preSignedRequest.url().toString();
+            return companyLogoRepository.save(newLogo);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Failed to upload the file");
         }
     }
+
 }
