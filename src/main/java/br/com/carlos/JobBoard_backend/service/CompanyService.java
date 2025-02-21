@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -76,7 +77,7 @@ public class CompanyService {
     @Transactional
     public JobEntity postJob(JobDto dto, String companyId) {
         var company = companyRepository.findById(UUID.fromString(companyId))
-                .orElseThrow(() -> new UserNotFound("Company not found"));
+                .orElseThrow(CompanyNotFound::new);
 
         var logo = companyLogoRepository.findById(UUID.fromString(dto.logoId()))
                 .orElseThrow(() -> new IllegalArgumentException("Logo not found for ID: " + dto.logoId()));
@@ -102,4 +103,24 @@ public class CompanyService {
 
     }
 
+    public List<JobDto> getAllJobs() {
+        var jobs = jobRepository.findAll();
+
+        return jobs.stream()
+                .map(job -> new JobDto(
+                        job.getPhoneNumber(),
+                        job.getEmployeesNumber(),
+                        job.getJobTitle(),
+                        job.getJobType(),
+                        job.getJobCategory(),
+                        job.getLocation(),
+                        job.getEmploymentType(),
+                        job.getAddressLine(),
+                        job.getSalaryRange(),
+                        job.getSalaryBased(),
+                        job.getAboutCompany(),
+                        job.getRequirements(),
+                        job.getCompanyLogUrl()
+                )).toList();
+    }
 }

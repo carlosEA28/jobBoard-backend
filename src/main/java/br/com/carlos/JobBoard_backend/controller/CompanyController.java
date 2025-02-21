@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -38,6 +39,13 @@ public class CompanyController {
     public ResponseEntity<JobEntity> postJob(@Valid @RequestBody JobDto dto, @PathVariable("companyId") String companyId) {
         var job = companyService.postJob(dto, companyId);
         return ResponseEntity.ok().body(job);
+    }
+
+    @GetMapping("/jobs")
+    public ResponseEntity<List<JobDto>> getAllJobs() {
+        var jobs = companyService.getAllJobs();
+
+        return ResponseEntity.ok().body(jobs);
     }
 
 }
