@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "company_logo")
 public class CompanyLogoEntity {
 

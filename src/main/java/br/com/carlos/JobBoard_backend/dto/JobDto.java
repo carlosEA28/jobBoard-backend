@@ -1,6 +1,19 @@
 package br.com.carlos.JobBoard_backend.dto;
 
-public record JobDto(String phoneNumber, Integer employeesNumber, String jobTitle, String jobCategory, String jobType,
-                     String Location, String EmploymentType, String AddressLine, Integer SalaryRange,
-                     String SalaryBased, String CompanyLogUrl, String AboutCompany, String Requirements) {
+public record JobDto(
+        String phoneNumber,
+        Integer employeesNumber,
+        String jobTitle,
+        String jobCategory,
+        String jobType,
+        String location,
+        String employmentType,
+        String addressLine,
+        Integer salaryRange,
+        String salaryBased,
+        String aboutCompany,
+        String requirements,
+        String logoId
+) {
 }
+//String CompanyLogUrl

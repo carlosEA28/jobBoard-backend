@@ -1,5 +1,6 @@
 package br.com.carlos.JobBoard_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class JobEntity {
     @NotBlank(message = "The field [phoneNumber] cannot be empty")
     private String phoneNumber;
 
-    @NotBlank(message = "The field [employeesNumber] cannot be empty")
+    //    @NotBlank(message = "The field [employeesNumber] cannot be empty")
     private Integer employeesNumber;
 
     @NotBlank(message = "The field [jobTitle] cannot be empty")
@@ -40,7 +41,7 @@ public class JobEntity {
     @NotBlank(message = "The field [AddressLine] cannot be empty")
     private String AddressLine;
 
-    @NotBlank(message = "The field [SalaryRange] cannot be empty")
+    //    @NotBlank(message = "The field [SalaryRange] cannot be empty")
     private Integer SalaryRange;
 
     @NotBlank(message = "The field [SalaryBased] cannot be empty")
@@ -57,10 +58,12 @@ public class JobEntity {
 
     @ManyToOne
     @JoinColumn(name = "companyId", nullable = false)
+    @JsonIgnoreProperties("jobs")
     private CompanyEntity company;
 
     @OneToOne
     @JoinColumn(name = "logo_id", referencedColumnName = "logo_id")
+    @JsonIgnoreProperties("jobEntity")
     private CompanyLogoEntity companyLogoEntity;
 
 

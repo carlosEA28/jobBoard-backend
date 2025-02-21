@@ -44,6 +44,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/user/info/{userId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/user/currentUser").authenticated()
                         .requestMatchers(HttpMethod.POST, "/logo/upload").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/company/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/company/post/{companyId}").permitAll()
                         .anyRequest().permitAll()) //arrumar e por em authenticated
                 .oauth2ResourceServer(config -> config.jwt(jwt -> jwt.decoder(jwtConfig.jwtDecoder())));
 

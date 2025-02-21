@@ -25,6 +25,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<RestErrorMessage> companyAlreadyExistsHandler(CompanyAlreadyExists exception) {
         RestErrorMessage response = new RestErrorMessage(HttpStatus.CONFLICT, exception.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+
+    }
+
+    private ResponseEntity<RestErrorMessage> companyNotFoundHandler(CompanyNotFound exception) {
+        RestErrorMessage response = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     public RestExceptionHandler() {

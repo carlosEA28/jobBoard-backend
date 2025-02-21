@@ -5,7 +5,9 @@ import br.com.carlos.JobBoard_backend.dto.LoginDto;
 import br.com.carlos.JobBoard_backend.dto.LoginResponseDto;
 import br.com.carlos.JobBoard_backend.dto.currentUserResponse;
 import br.com.carlos.JobBoard_backend.entity.UserEntity;
+import br.com.carlos.JobBoard_backend.enums.Roles;
 import br.com.carlos.JobBoard_backend.exceptions.UserNotFound;
+import br.com.carlos.JobBoard_backend.repository.CompanyRepository;
 import br.com.carlos.JobBoard_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -26,23 +28,37 @@ public class JwtActions {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CompanyRepository companyRepository;
+
     public LoginResponseDto jwtCreate(LoginDto dto) {
-
         var user = userRepository.findByEmail(dto.email());
+        var company = companyRepository.findByBusinessEmail(dto.email());
 
-        if (user.isEmpty()) {
-            throw new UserNotFound("User not found");
+        if (user.isEmpty() && company.isEmpty()) {
+            throw new UserNotFound("Account not found");
         }
 
         var now = Instant.now();
         var expiresIn = 7 * 24 * 60 * 60L;
-        var role = user.get().getRoles();
 
+        String subject;
+        String role;
+
+        if (user.isPresent()) {
+            subject = String.valueOf(user.get().getUserId());
+            role = user.get().getRoles().name();
+        } else {
+            subject = String.valueOf(company.get().getCompanyId());
+            role = company.get().getRoles().name();
+        }
+
+        // Criar o token com os claims apropriados
         var claims = JwtClaimsSet.builder()
                 .issuer("jobboard")
-                .subject(String.valueOf(user.get().getUserId()))
+                .subject(subject)
                 .issuedAt(now)
-                .claim("role", role.name())
+                .claim("role", role)
                 .expiresAt(now.plusSeconds(expiresIn))
                 .build();
 
@@ -59,5 +75,4 @@ public class JwtActions {
         }
         return null;
     }
-
 }
