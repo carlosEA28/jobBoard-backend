@@ -10,7 +10,6 @@ import br.com.carlos.JobBoard_backend.enums.AuthProvider;
 import br.com.carlos.JobBoard_backend.enums.Roles;
 import br.com.carlos.JobBoard_backend.exceptions.CompanyAlreadyExists;
 import br.com.carlos.JobBoard_backend.exceptions.CompanyNotFound;
-import br.com.carlos.JobBoard_backend.exceptions.UserNotFound;
 import br.com.carlos.JobBoard_backend.exceptions.WrongCreadentials;
 import br.com.carlos.JobBoard_backend.repository.CompanyLogoRepository;
 import br.com.carlos.JobBoard_backend.repository.CompanyRepository;
@@ -122,5 +121,9 @@ public class CompanyService {
                         job.getRequirements(),
                         job.getCompanyLogUrl()
                 )).toList();
+    }
+
+    public void uploadCv(){
+
     }
 }

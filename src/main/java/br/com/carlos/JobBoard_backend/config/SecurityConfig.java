@@ -1,5 +1,6 @@
 package br.com.carlos.JobBoard_backend.config;
 
+import br.com.carlos.JobBoard_backend.enums.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/company/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/info/{userId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/user/currentUser").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/user/cv/{userId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/logo/upload").permitAll()
                         .requestMatchers(HttpMethod.POST, "/company/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/company/post/{companyId}").permitAll()

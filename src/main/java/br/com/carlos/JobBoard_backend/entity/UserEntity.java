@@ -44,6 +44,17 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private AuthProvider authProvider;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private CurriculumEntity curriculum;
+
+    public CurriculumEntity getCurriculum() {
+        return curriculum;
+    }
+
+    public void setCurriculum(CurriculumEntity curriculum) {
+        this.curriculum = curriculum;
+    }
+
     public UUID getUserId() {
         return userId;
     }

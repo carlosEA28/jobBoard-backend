@@ -4,21 +4,32 @@ import br.com.carlos.JobBoard_backend.dto.CreateUserDto;
 import br.com.carlos.JobBoard_backend.dto.LoggedUserDto;
 import br.com.carlos.JobBoard_backend.dto.LoginDto;
 import br.com.carlos.JobBoard_backend.dto.LoginResponseDto;
+import br.com.carlos.JobBoard_backend.entity.CurriculumEntity;
 import br.com.carlos.JobBoard_backend.entity.UserEntity;
 import br.com.carlos.JobBoard_backend.enums.AuthProvider;
 import br.com.carlos.JobBoard_backend.enums.Roles;
 import br.com.carlos.JobBoard_backend.exceptions.UserAlreadyExists;
 import br.com.carlos.JobBoard_backend.exceptions.UserNotFound;
 import br.com.carlos.JobBoard_backend.exceptions.WrongCreadentials;
+import br.com.carlos.JobBoard_backend.repository.CurriculumRepository;
 import br.com.carlos.JobBoard_backend.repository.UserRepository;
 import br.com.carlos.JobBoard_backend.utils.JwtActions;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
+import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -29,6 +40,13 @@ public class UserService {
 
     @Autowired
     private JwtActions jwtActions;
+
+    @Autowired
+    private Cloudinary cloudinary;
+
+    @Autowired
+    private CurriculumRepository curriculumRepository;
+
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -85,5 +103,28 @@ public class UserService {
     public LoggedUserDto loggedUser(String userId) {
         var userExists = userRepository.findById(UUID.fromString(userId)).orElseThrow(() -> new UserNotFound("User not found"));
         return new LoggedUserDto(userExists.getFirstName(), userExists.getSecondName(), userExists.getEmail(), userExists.getPassword());
+    }
+
+    public CurriculumEntity uploadCv(String userId, MultipartFile file) {
+        try {
+            var cv = cloudinary.uploader().upload(
+                    file.getBytes(),
+                    ObjectUtils.asMap(
+                            "folder", "cv",
+                            "format", "png"
+                    )
+            );
+
+            var user = userRepository.findById(UUID.fromString(userId)).orElseThrow(() -> new UserNotFound("User not found"));
+
+            var newCv = new CurriculumEntity();
+            newCv.setUser(user);
+            newCv.setCvUrl(cv.get("url").toString());
+
+
+            return curriculumRepository.save(newCv);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Failed to upload the file");
+        }
     }
 }
