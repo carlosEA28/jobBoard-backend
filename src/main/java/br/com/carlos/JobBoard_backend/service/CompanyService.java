@@ -122,8 +122,4 @@ public class CompanyService {
                         job.getCompanyLogUrl()
                 )).toList();
     }
-
-    public void uploadCv(){
-
-    }
 }

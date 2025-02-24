@@ -60,8 +60,8 @@ public class UserController {
     }
 
     @PostMapping("/cv/{userId}")
-    public ResponseEntity<CurriculumEntity> uploadCv(@Valid @PathVariable("userId") String userId, MultipartFile file) {
-        var cv = userService.uploadCv(userId, file);
+    public ResponseEntity<CurriculumEntity> uploadCv(@Valid @PathVariable("userId") String userId, MultipartFile file, String cvId) {
+        var cv = userService.uploadCv(userId, file, cvId);
 
         return ResponseEntity.ok().body(cv);
     }

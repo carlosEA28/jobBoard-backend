@@ -18,7 +18,7 @@ public class CurriculumEntity {
     private String cvUrl;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "userId", nullable = false) // Nome correto do campo de ID
+    @JoinColumn(name = "user_id", referencedColumnName = "userId", nullable = false)
     private UserEntity user;
 
     public UserEntity getUser() {

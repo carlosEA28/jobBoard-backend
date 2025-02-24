@@ -33,6 +33,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    private ResponseEntity<RestErrorMessage> cvAlreadyExistsHandler(CvAlreadyExists exception) {
+        RestErrorMessage response = new RestErrorMessage(HttpStatus.CONFLICT, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
     public RestExceptionHandler() {
     }
 }

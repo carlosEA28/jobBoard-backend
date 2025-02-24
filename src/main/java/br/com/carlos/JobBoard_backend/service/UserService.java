@@ -1,13 +1,11 @@
 package br.com.carlos.JobBoard_backend.service;
 
-import br.com.carlos.JobBoard_backend.dto.CreateUserDto;
-import br.com.carlos.JobBoard_backend.dto.LoggedUserDto;
-import br.com.carlos.JobBoard_backend.dto.LoginDto;
-import br.com.carlos.JobBoard_backend.dto.LoginResponseDto;
+import br.com.carlos.JobBoard_backend.dto.*;
 import br.com.carlos.JobBoard_backend.entity.CurriculumEntity;
 import br.com.carlos.JobBoard_backend.entity.UserEntity;
 import br.com.carlos.JobBoard_backend.enums.AuthProvider;
 import br.com.carlos.JobBoard_backend.enums.Roles;
+import br.com.carlos.JobBoard_backend.exceptions.CvAlreadyExists;
 import br.com.carlos.JobBoard_backend.exceptions.UserAlreadyExists;
 import br.com.carlos.JobBoard_backend.exceptions.UserNotFound;
 import br.com.carlos.JobBoard_backend.exceptions.WrongCreadentials;
@@ -105,7 +103,13 @@ public class UserService {
         return new LoggedUserDto(userExists.getFirstName(), userExists.getSecondName(), userExists.getEmail(), userExists.getPassword());
     }
 
-    public CurriculumEntity uploadCv(String userId, MultipartFile file) {
+    public CurriculumEntity uploadCv(String userId, MultipartFile file, String cvId) {
+
+        curriculumRepository.findByUser_UserId(UUID.fromString(userId))
+                .ifPresent(cv -> {
+                    throw new CvAlreadyExists();
+                });
+
         try {
             var cv = cloudinary.uploader().upload(
                     file.getBytes(),
