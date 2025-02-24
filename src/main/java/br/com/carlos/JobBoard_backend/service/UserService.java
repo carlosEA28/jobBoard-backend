@@ -131,4 +131,8 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Failed to upload the file");
         }
     }
+
+    public void applyForJob() {
+        
+    }
 }
