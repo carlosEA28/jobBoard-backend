@@ -38,6 +38,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
+    private ResponseEntity<RestErrorMessage> cvNotFoundHandler(CvNotFound exception) {
+        RestErrorMessage response = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
     public RestExceptionHandler() {
     }
 }

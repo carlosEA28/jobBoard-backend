@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/user/info/{userId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/user/currentUser").authenticated()
                         .requestMatchers(HttpMethod.POST, "/user/cv/{userId}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/apply/{userId}/{companyId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/logo/upload").permitAll()
                         .requestMatchers(HttpMethod.POST, "/company/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/company/post/{companyId}").permitAll()

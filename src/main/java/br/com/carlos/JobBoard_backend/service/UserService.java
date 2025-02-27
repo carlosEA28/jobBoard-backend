@@ -5,20 +5,18 @@ import br.com.carlos.JobBoard_backend.entity.CurriculumEntity;
 import br.com.carlos.JobBoard_backend.entity.UserEntity;
 import br.com.carlos.JobBoard_backend.enums.AuthProvider;
 import br.com.carlos.JobBoard_backend.enums.Roles;
-import br.com.carlos.JobBoard_backend.exceptions.CvAlreadyExists;
-import br.com.carlos.JobBoard_backend.exceptions.UserAlreadyExists;
-import br.com.carlos.JobBoard_backend.exceptions.UserNotFound;
-import br.com.carlos.JobBoard_backend.exceptions.WrongCreadentials;
+import br.com.carlos.JobBoard_backend.exceptions.*;
+import br.com.carlos.JobBoard_backend.mail.MailService;
+import br.com.carlos.JobBoard_backend.repository.CompanyRepository;
 import br.com.carlos.JobBoard_backend.repository.CurriculumRepository;
 import br.com.carlos.JobBoard_backend.repository.UserRepository;
 import br.com.carlos.JobBoard_backend.utils.JwtActions;
 import com.cloudinary.Cloudinary;
-import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -27,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -44,6 +41,12 @@ public class UserService {
 
     @Autowired
     private CurriculumRepository curriculumRepository;
+
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private CompanyRepository companyRepository;
 
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -79,7 +82,7 @@ public class UserService {
     }
 
     //salva o user que fez login pelo google no banco
-    public UserEntity loginRegisterByGoogleOauth2(OAuth2AuthenticationToken token) {
+    public void loginRegisterByGoogleOauth2(OAuth2AuthenticationToken token) {
 
         OAuth2User user = token.getPrincipal();
         String name = user.getAttribute("name");
@@ -95,7 +98,7 @@ public class UserService {
         newUser.setEmail(email);
         newUser.setAuthProvider(AuthProvider.GOOGLE);
 
-        return userRepository.save(newUser);
+        userRepository.save(newUser);
     }
 
     public LoggedUserDto loggedUser(String userId) {
@@ -103,7 +106,7 @@ public class UserService {
         return new LoggedUserDto(userExists.getFirstName(), userExists.getSecondName(), userExists.getEmail(), userExists.getPassword());
     }
 
-    public CurriculumEntity uploadCv(String userId, MultipartFile file, String cvId) {
+    public CurriculumEntity uploadCv(String userId, MultipartFile file) {
 
         curriculumRepository.findByUser_UserId(UUID.fromString(userId))
                 .ifPresent(cv -> {
@@ -132,7 +135,26 @@ public class UserService {
         }
     }
 
-    public void applyForJob() {
-        
+    //fazer async
+    //fazer retornar um html link para o curriculo
+    public String applyForJob(String userId, String companyId) {
+
+        var companyExists = companyRepository.findByCompanyId(UUID.fromString(companyId))
+                .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+        var userExists = userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new UserNotFound("User not found"));
+
+        var cvExists = curriculumRepository.findByUser_UserId(UUID.fromString(userId));
+
+        if (cvExists.isEmpty()) {
+            throw new CvNotFound();
+        }
+
+        return mailService.sendEmailTest(
+                companyExists.getBusinessEmail(),
+                "CV from " + userExists.getFirstName() + " " + userExists.getSecondName(),
+                userExists.getCurriculum().getCvUrl()
+        );
     }
 }

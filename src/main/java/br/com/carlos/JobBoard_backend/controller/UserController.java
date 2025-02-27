@@ -1,9 +1,6 @@
 package br.com.carlos.JobBoard_backend.controller;
 
-import br.com.carlos.JobBoard_backend.dto.CreateUserDto;
-import br.com.carlos.JobBoard_backend.dto.LoggedUserDto;
-import br.com.carlos.JobBoard_backend.dto.LoginDto;
-import br.com.carlos.JobBoard_backend.dto.LoginResponseDto;
+import br.com.carlos.JobBoard_backend.dto.*;
 import br.com.carlos.JobBoard_backend.entity.CurriculumEntity;
 import br.com.carlos.JobBoard_backend.entity.UserEntity;
 import br.com.carlos.JobBoard_backend.service.UserService;
@@ -60,9 +57,16 @@ public class UserController {
     }
 
     @PostMapping("/cv/{userId}")
-    public ResponseEntity<CurriculumEntity> uploadCv(@Valid @PathVariable("userId") String userId, MultipartFile file, String cvId) {
-        var cv = userService.uploadCv(userId, file, cvId);
+    public ResponseEntity<CurriculumEntity> uploadCv(@Valid @PathVariable("userId") String userId, MultipartFile file) {
+        var cv = userService.uploadCv(userId, file);
 
         return ResponseEntity.ok().body(cv);
+    }
+
+    @PostMapping("/apply/{userId}/{companyId}")
+    public String applyForJob(@PathVariable String companyId,
+                              @PathVariable String userId
+    ) {
+        return userService.applyForJob(userId, companyId);
     }
 }

@@ -18,11 +18,15 @@ import java.io.IOException;
 @Service
 public class CompanyLogoService {
 
-    @Autowired
+
     private CompanyLogoRepository companyLogoRepository;
 
-    @Autowired
-    private Cloudinary cloudinary;
+
+    private final Cloudinary cloudinary;
+
+    public CompanyLogoService(Cloudinary cloudinary) {
+        this.cloudinary = cloudinary;
+    }
 
     public CompanyLogoEntity uploadLogo(String name, MultipartFile file) {
         try {
