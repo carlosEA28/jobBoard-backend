@@ -16,4 +16,3 @@ public record JobDto(
         String logoId
 ) {
 }
-//String CompanyLogUrl

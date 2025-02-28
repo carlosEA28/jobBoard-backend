@@ -55,6 +55,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/jobs/salary-range/{range}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/jobs/salary-based/{based}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/jobs/category/{category}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/jobs/{jobId}").permitAll()
                         .anyRequest().permitAll()) //arrumar e por em authenticated
                 .oauth2ResourceServer(config -> config.jwt(jwt -> jwt.decoder(jwtConfig.jwtDecoder())));
 

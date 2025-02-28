@@ -1,6 +1,7 @@
 package br.com.carlos.JobBoard_backend.controller;
 
 import br.com.carlos.JobBoard_backend.dto.JobDto;
+import br.com.carlos.JobBoard_backend.dto.UpdateJobDto;
 import br.com.carlos.JobBoard_backend.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,12 @@ public class JobController {
     public ResponseEntity<List<JobDto>> getAllByJobCategory(@PathVariable String category) {
         var jobs = jobService.getJobByJobCategory(category);
         return ResponseEntity.ok().body(jobs);
+    }
+
+    @PutMapping("/{jobId}")
+    public ResponseEntity<Void> updateJob(@PathVariable String jobId, @RequestBody UpdateJobDto dto) {
+
+        return jobService.updateJob(jobId, dto);
     }
 }
 
