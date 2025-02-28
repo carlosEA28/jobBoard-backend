@@ -49,7 +49,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/logo/upload").permitAll()
                         .requestMatchers(HttpMethod.POST, "/company/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/company/post/{companyId}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/company/jobs").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/jobs").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/jobs/type/{jobType}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/jobs/location/{location}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/jobs/salary-range/{range}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/jobs/salary-based/{based}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/jobs/category/{category}").permitAll()
                         .anyRequest().permitAll()) //arrumar e por em authenticated
                 .oauth2ResourceServer(config -> config.jwt(jwt -> jwt.decoder(jwtConfig.jwtDecoder())));
 

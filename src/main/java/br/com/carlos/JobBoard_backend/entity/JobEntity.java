@@ -32,8 +32,8 @@ public class JobEntity {
     @NotBlank(message = "The field [jobType] cannot be empty")
     private String jobType;
 
-    @NotBlank(message = "The field [Location] cannot be empty")
-    private String Location;
+    @NotBlank(message = "The field [location] cannot be empty")
+    private String location;
 
     @NotBlank(message = "The field [EmploymentType] cannot be empty")
     private String EmploymentType;
@@ -41,11 +41,19 @@ public class JobEntity {
     @NotBlank(message = "The field [AddressLine] cannot be empty")
     private String AddressLine;
 
-    //    @NotBlank(message = "The field [SalaryRange] cannot be empty")
-    private Integer SalaryRange;
+    private Integer salaryRange;
+
+
+    public String getSalaryBased() {
+        return salaryBased;
+    }
+
+    public void setSalaryBased(String salaryBased) {
+        this.salaryBased = salaryBased;
+    }
 
     @NotBlank(message = "The field [SalaryBased] cannot be empty")
-    private String SalaryBased;
+    private String salaryBased;
 
     @NotBlank(message = "The field [CompanyLogUrl] cannot be empty")
     private String CompanyLogUrl;
@@ -124,11 +132,11 @@ public class JobEntity {
     }
 
     public String getLocation() {
-        return Location;
+        return location;
     }
 
     public void setLocation(String location) {
-        Location = location;
+        this.location = location;
     }
 
     public String getEmploymentType() {
@@ -148,20 +156,13 @@ public class JobEntity {
     }
 
     public Integer getSalaryRange() {
-        return SalaryRange;
+        return salaryRange;
     }
 
     public void setSalaryRange(Integer salaryRange) {
-        SalaryRange = salaryRange;
+        this.salaryRange = salaryRange;
     }
 
-    public String getSalaryBased() {
-        return SalaryBased;
-    }
-
-    public void setSalaryBased(String salaryBased) {
-        SalaryBased = salaryBased;
-    }
 
     public String getCompanyLogUrl() {
         return CompanyLogUrl;

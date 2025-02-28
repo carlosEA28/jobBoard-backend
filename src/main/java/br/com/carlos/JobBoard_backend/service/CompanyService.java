@@ -17,6 +17,7 @@ import br.com.carlos.JobBoard_backend.repository.JobRepository;
 import br.com.carlos.JobBoard_backend.utils.JwtActions;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -100,26 +101,5 @@ public class CompanyService {
 
         return jobRepository.save(newJob);
 
-    }
-
-    public List<JobDto> getAllJobs() {
-        var jobs = jobRepository.findAll();
-
-        return jobs.stream()
-                .map(job -> new JobDto(
-                        job.getPhoneNumber(),
-                        job.getEmployeesNumber(),
-                        job.getJobTitle(),
-                        job.getJobType(),
-                        job.getJobCategory(),
-                        job.getLocation(),
-                        job.getEmploymentType(),
-                        job.getAddressLine(),
-                        job.getSalaryRange(),
-                        job.getSalaryBased(),
-                        job.getAboutCompany(),
-                        job.getRequirements(),
-                        job.getCompanyLogUrl()
-                )).toList();
     }
 }

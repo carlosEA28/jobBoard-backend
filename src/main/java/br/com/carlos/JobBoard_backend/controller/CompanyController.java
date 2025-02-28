@@ -40,12 +40,4 @@ public class CompanyController {
         var job = companyService.postJob(dto, companyId);
         return ResponseEntity.ok().body(job);
     }
-
-    @GetMapping("/jobs")
-    public ResponseEntity<List<JobDto>> getAllJobs() {
-        var jobs = companyService.getAllJobs();
-
-        return ResponseEntity.ok().body(jobs);
-    }
-
 }
