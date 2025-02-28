@@ -146,12 +146,10 @@ public class JobService {
 
     @Transactional
     public ResponseEntity<Void> updateJob(String jobId, UpdateJobDto dto) {
-        // Validate input
         if (jobId == null || dto == null) {
             throw new IllegalArgumentException("Job ID and DTO must not be null");
         }
 
-        // Retrieve the job entity
         var jobExists = jobRepository.findById(UUID.fromString(jobId))
                 .orElseThrow(JobNotFound::new);
 
@@ -193,13 +191,8 @@ public class JobService {
             jobExists.setAboutCompany(dto.aboutCompany());
         }
 
-        // Save the updated job
         jobRepository.save(jobExists);
 
-        // Log the update
-//        log.info("Job with ID {} updated successfully", jobId);
-
-        // Return no content response
         return ResponseEntity.noContent().build();
     }
 }
