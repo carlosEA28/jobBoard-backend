@@ -59,12 +59,22 @@ class UserRepositoryTest {
 
     @Test
     @DisplayName("Should get user successfully from database by user id")
-    void findById() {
+    void findByIdSuccess() {
         CreateUserDto data = new CreateUserDto("Carlos", "Eduardo", "test@test.com", "1234");
         UserEntity createdUser = this.createUser(data);
 
         Optional<UserEntity> foundedUser = this.userRepository.findById(createdUser.getUserId());
         assertThat(foundedUser.isPresent()).isTrue();
+
+    }
+
+    @Test
+    @DisplayName("Should not get user from database when does not exist")
+    void findByIdFail() {
+        UUID userId = UUID.randomUUID();
+
+        Optional<UserEntity> foundedUser = this.userRepository.findById(userId);
+        assertThat(foundedUser.isEmpty()).isTrue();
 
     }
 
