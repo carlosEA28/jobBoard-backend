@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -81,5 +82,20 @@ public class UserController {
 
         userService.deleteJob(userId);
         return ResponseEntity.ok().body("Job deleted");
+    }
+
+
+    @PostMapping("/redeem-password")
+    public ResponseEntity<Map<String, String>> redeemPassword(@RequestBody @Valid UserReedemPasswordDto userReedemPasswordDto) {
+        userService.reedemPassword(userReedemPasswordDto.email());
+
+        return ResponseEntity.ok().body(Map.of("message", "Send the redeem password link to your email"));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(@RequestBody @Valid UserResetPasswordDto dto) {
+        userService.resetPassword(dto);
+
+        return ResponseEntity.ok().body(Map.of("message", "Credentials updated"));
     }
 }

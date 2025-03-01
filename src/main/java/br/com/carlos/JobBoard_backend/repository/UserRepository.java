@@ -13,5 +13,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     Optional<UserEntity> findById(UUID userId);
 
+    Optional<UserEntity> findByResetToken(String resetToken);
+
 
 }

@@ -17,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,6 +52,9 @@ public class UserService {
 
     @Autowired
     private CompanyRepository companyRepository;
+
+    @Value("${token.expiration.seconds:300}")
+    private long tokenExpirationSeconds;
 
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -184,6 +189,54 @@ public class UserService {
 
     public void deleteJob(String userId) {
         userRepository.deleteById(UUID.fromString(userId));
+    }
+
+    private void sendPasswordResetEmail(String email, String token) {
+
+        String subject = "Redefinição de senha solicitado";
+
+        String resetUrl = String.format("https://Board.com/reset-password?token=%s", token); //colocar o link do frontend de resetar senha
+
+        String body = String.format("""
+                Olá,
+                
+                Recebemos uma solicitação para redefinir sua senha. \
+                Clique no link abaixo para redefinir sua senha:
+                
+                %s
+                
+                Se você não solicitou a redefinição de senha, ignore este e-mail.
+                
+                Atenciosamente,
+                Equipe Job Board""", resetUrl);
+
+        mailService.sendEmailTest(email, subject, body);
+    }
+
+    public void reedemPassword(String email) {
+        var user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFound("User not found"));
+
+        var token = UUID.randomUUID().toString();
+
+        user.withResetToken(token, Instant.now().plusSeconds(this.tokenExpirationSeconds));
+
+        userRepository.save(user);
+
+        sendPasswordResetEmail(user.getEmail(), token);
+    }
+
+    public void resetPassword(UserResetPasswordDto userResetPasswordDto) {
+        var customer = userRepository
+                .findByResetToken(userResetPasswordDto.token())
+                .orElseThrow(() -> new UserNotFound("User not found"));
+
+        customer.setPassword(
+                bCryptPasswordEncoder.encode(userResetPasswordDto.password())
+        );
+
+        customer.withResetToken(null, null);
+
+        userRepository.save(customer);
     }
 }
 
