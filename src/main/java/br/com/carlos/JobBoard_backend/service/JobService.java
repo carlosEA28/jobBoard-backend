@@ -195,4 +195,8 @@ public class JobService {
 
         return ResponseEntity.noContent().build();
     }
+
+    public void deleteJob(String jobId) {
+        jobRepository.deleteById(UUID.fromString(jobId));
+    }
 }
