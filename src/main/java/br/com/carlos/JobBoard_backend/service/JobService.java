@@ -153,7 +153,6 @@ public class JobService {
         var jobExists = jobRepository.findById(UUID.fromString(jobId))
                 .orElseThrow(JobNotFound::new);
 
-        // Update only non-null fields
         if (dto.phoneNumber() != null) {
             jobExists.setPhoneNumber(dto.phoneNumber());
         }

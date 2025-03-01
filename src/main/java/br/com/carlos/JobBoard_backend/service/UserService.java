@@ -14,9 +14,11 @@ import br.com.carlos.JobBoard_backend.utils.JwtActions;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -158,4 +160,30 @@ public class UserService {
                 userExists.getCurriculum().getCvUrl()
         );
     }
+
+    @Transactional
+    public ResponseEntity<Void> updateUserInfo(String userId, UpdateUserDto dto) {
+        if (userId == null || dto == null) {
+            throw new IllegalArgumentException("Job ID and DTO must not be null");
+        }
+
+        var userExists = userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(JobNotFound::new);
+
+        if (dto.firstName() != null) {
+            userExists.setFirstName(dto.firstName());
+        }
+        if (dto.secondName() != null) {
+            userExists.setSecondName(dto.secondName());
+        }
+
+        userRepository.save(userExists);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    public void deleteJob(String userId) {
+        userRepository.deleteById(UUID.fromString(userId));
+    }
 }
+

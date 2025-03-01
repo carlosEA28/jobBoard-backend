@@ -46,6 +46,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/user/currentUser").authenticated()
                         .requestMatchers(HttpMethod.POST, "/user/cv/{userId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/apply/{userId}/{companyId}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/user/{userId}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/user/delete/{userId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/logo/upload").permitAll()
                         .requestMatchers(HttpMethod.POST, "/company/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/company/post/{companyId}").permitAll()

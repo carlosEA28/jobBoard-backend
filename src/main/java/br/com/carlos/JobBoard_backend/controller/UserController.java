@@ -69,4 +69,17 @@ public class UserController {
     ) {
         return userService.applyForJob(userId, companyId);
     }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<Void> updateJob(@PathVariable String userId, @RequestBody UpdateUserDto dto) {
+
+        return userService.updateUserInfo(userId, dto);
+    }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<String> deleteJob(@PathVariable String userId) {
+
+        userService.deleteJob(userId);
+        return ResponseEntity.ok().body("Job deleted");
+    }
 }
